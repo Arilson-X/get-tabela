@@ -4,6 +4,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 
+def save_to_excel(tabelas_df, titulo):
+    with pd.ExcelWriter(titulo+".xlsx") as writer:
+        for tab_name, tab_data in tabelas_df.items():
+            tab_data.to_excel(writer, sheet_name=tab_name, index=False)
+
 def getTabela(link):
     driver = webdriver.Chrome()
     driver.get(link)
@@ -20,15 +25,8 @@ def getTabela(link):
     for idx, tabela in enumerate(tabelas):
         df = pd.read_html(tabela.get_attribute('outerHTML'))[0]
         dict_tabelas[f'Tabela {idx+1}'] = df
-        # print(dict_tabelas[f'Tabela {idx+1}'])
     driver.quit()
 
-    return dict_tabelas, titulo
+    save_to_excel(dict_tabelas, titulo)
+    return dict_tabelas,titulo+".xlsx"
 
-def save_to_excel(tabelas_df, titulo):
-    with pd.ExcelWriter(titulo+".xlsx") as writer:
-        for tab_name, tab_data in tabelas_df.items():
-            tab_data.to_excel(writer, sheet_name=tab_name, index=False)
-
-tabelas,titulo = getTabela("https://www.noticiasagricolas.com.br/cotacoes/")
-save_to_excel(tabelas,titulo)
