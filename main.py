@@ -1,29 +1,47 @@
 import sys
-import time
 import pandas as pd
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication,QTextEdit, QWidget, QVBoxLayout, QHBoxLayout, QLabel,QLineEdit, QPushButton, QMessageBox
 import GetTabela
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Get de Tabelas")
-        
+        self.setFixedHeight(700)
+        self.setFixedWidth(700)
+
         self.url_label = QLabel("URL:")
+        self.url_label.setFixedWidth(80)
         self.url_input = QLineEdit()
-        
+        self.url_input.setFixedWidth(500)
+        self.url_input.setAlignment(Qt.AlignCenter)
+
         self.extract_button = QPushButton("Extrair Tabelas")
+        self.extract_button.setFixedWidth(100)
         self.extract_button.clicked.connect(self.extract_tables)
         
+        url_layout = QHBoxLayout()
+        url_layout.addWidget(self.url_label)
+        url_layout.addWidget(self.url_input)
+
+        self.log_label = QLabel("Log do Processo:")
+        self.log_label.setAlignment(Qt.AlignBottom)
+        self.log_text = QTextEdit()
+        self.log_text.setReadOnly(True)
+        self.log_text.setFixedHeight(200)
+        self.log_text.setFixedWidth(650)
+
+        log_layout = QVBoxLayout()
+        log_layout.addWidget(self.log_label)
+        log_layout.addWidget(self.log_text)
+
         layout = QVBoxLayout()
-        layout.addWidget(self.url_label)
-        layout.addWidget(self.url_input)
+        layout.addLayout(url_layout)
         layout.addWidget(self.extract_button)
-        
+        layout.addLayout(log_layout)
+        layout.setAlignment(Qt.AlignCenter)
+
         self.setLayout(layout)
     
     def extract_tables(self):
